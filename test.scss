@@ -1,0 +1,261 @@
+// css
+// .container h1{
+    // color: tomato;
+// // }
+// .container > div {
+//   background-color: royalblue;
+//   color: white;
+//   font-size: 50px;
+// }
+
+$color: tomato; // 변수
+.container {
+  h1 {
+    // color: $color; scss 주석처리 (컴파일 되면 사라짐)
+    /* color: $color; (컴파일 되어도 남음) */
+    font-size: 60px;
+    color: tomato;
+  }
+  > .child1 {
+    background-color: royalblue;
+    color: white;
+  }
+  > .child2 {
+    background-color: yellowgreen;
+    color: white;
+  }
+  > .child3 {
+    background-color: pink;
+    color: white;
+  }
+
+  // & = 자신이 선택한 영역의 상위 선택자를 참조
+  &.second { // = .container.second
+    background-color: sandybrown;
+  }
+  .fs {
+    &-small {font-size: 12px;}
+    &-medium {font-size: 18px;}
+    &-large {font-size: 32px;}
+  }
+}
+// 중첩된 속성 (네임스페이스가 같을 경우)
+.box1 {
+  font: {
+    weight: bold;
+    size: 20px;
+    family: sans-serif;
+  };
+  margin: {
+    top: 10px;
+    left: 20px;
+  };
+}
+
+// 변수1
+// 유효 범위 : 
+// 선언된 중괄호 안에서만 적용되며, 
+// 재할당 되면 그 아래에서는 새로운 값으로 적용됨.
+.box2 {
+  $size : 200px;
+  position: fixed;
+  top: $size; // 200px
+  .item {
+    $size : 100px; // 재할당 가능
+    width: $size; // 100px
+    height: $size; // 100px
+    transform: translateX($size); // 100px
+  }
+  left: $size; // 100px
+}
+
+// 변수2
+// 전역 변수로 선언시 차이점
+$size : 200px; 
+.box3 {
+  position: fixed;
+  top: $size; // 200px
+  .item {
+    $size : 100px; // 재할당 가능
+    width: $size; // 100px
+    height: $size; // 100px
+    transform: translateX($size); // 100px
+  }
+  left: $size; // 200px << 차이점
+}
+
+// 산술연산
+.box4 {
+  width: 20px + 20px;
+  height: 40px - 10px;
+  font-size: 10px * 2;
+  // margin: 30px / 2; // 오류
+  // margin: (30px / 2); // 대안1. 소괄호
+  $size: 30px;
+  margin: size / 2; // 대안2. 변수 사용
+  padding: 20px % 7; 
+}
+
+// 산술연산 - 단축속성
+span {
+  font-size: 10px;
+  line-height: 10px;
+  font-family: serif;
+  font: 10px / 10px serif; 
+  // 이러한 단축속성이 기존에 있기 때문에 "/"를 나머지 연산으로 처리하지 않음.
+}
+
+// calc
+.box5 {
+  width: calc(100% - 200px);
+}
+
+// mixin
+.box6 {
+  .container {
+    width: 200px;
+    height: 200px;
+    background-color: orange;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .item {
+    width: 100px; 
+    height: 100px;
+    background-color: royalblue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+// mixin 적용
+@mixin center {
+  display: flex;
+  justify-content: center;
+  align-items: center;    
+}
+.box7 {
+  .container {
+    @include center;
+    width: 200px;
+    height: 200px;
+    background-color: orange;
+    .item {
+      @include center;
+      width: 100px; 
+      height: 100px;
+      background-color: royalblue;
+      }
+  }
+}
+
+// mixin 적용 + 인수 활용
+@mixin center($size, $color) {
+  width: $size;
+  height: $size;
+  background-color: $color;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.box8 {
+  .container {
+    @include center(200px, tomato);
+    .item {
+      @include center(100px, royalblue);
+    }
+  }
+}
+
+// mixin 적용 + 인수 활용 + default 값 활용
+@mixin center($size : 100px, $color: tomato) {
+  width: $size;
+  height: $size;
+  display: flex;
+  justify-content: center;
+  align-items: center;    
+}
+.box9 {
+  .container {
+    @include center(200px);
+    background-color: orange;
+    .item {
+      @include center($color: royalblue); 
+      // 순서가 맞지 않을 때, "키워드 인수"
+      background-color: royalblue;
+    }
+  }
+}
+
+// 반복문 
+@for $i from 1 through 10 {
+  .box:nth-child(#{$i}) { // 보간 : 값을 명시하는 곳이 아니기 때문
+    width: 100px * $i; // 값을 명시하는 부분이기 때문에 보간을 쓰지 않아도 됨.
+  }
+}
+
+// 함수
+@function ratio($size, $ratio) {
+  @return $size * $ratio
+}
+
+.box10 {
+  $width: 100px;
+  width: $width;
+  height: ratio($width, 1/2); // 유튜브 비율과 같이 9/16을 넣어 활용 가능
+  @include center;
+  .item {
+    @include center;
+  }
+}
+
+
+
+// 내장 함수
+.box11 {
+  $color: tomato;
+  width: 200px;
+  height: 100px;
+  margin: 20px;
+  border-radius: 10px;
+  background-color: $color;  
+  &.built-in1 {
+    background-color: mix($color, royalblue); // 
+  }
+  &.built-in2 {
+    background-color: lighten($color, 10%); // 밝게
+  }
+  &.built-in3 {
+    background-color: darken($color, 10%); // 어둡게
+  }
+  &.built-in4 {
+    background-color: saturate($color, 50%); // 채도 높게
+  }
+  &.built-in5 {
+    background-color: desaturate($color, 50%); // 채도 낮게
+  }
+  &.built-in6 {
+    background-color: grayscale($color); // 흑백
+  }
+  &.built-in7 {
+    background-color: invert($color); // 색상 반전
+  }
+  &.built-in8 {
+    background-color: rgba($color, .5); // 투명도
+    // css에서는 rgb값(3) + 투명도(1) 총 4개의 인자가 필요하지만
+    // scss에서는 색상(1) + 투명도(1) 총 2개의 값만으로 활용 가능
+  }
+}
+
+
+
+
+
+@for $i from 1 through 5 {
+  .item:nth-child(#{$i}) {
+    background-image: url("https://picsum.photos/200/300?random=#{$i}");
+    width: 20px * $i;
+  }
+}

@@ -1,0 +1,12 @@
+@import url("./sub.scss");
+@import "./sub.scss";
+@import "./sub";
+@import "./sub", "sub2.scss";
+
+$color: royalblue;
+
+.container {
+  h1 {
+    color: $color
+  }
+}
